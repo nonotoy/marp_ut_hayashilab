@@ -1,0 +1,266 @@
+/* @theme utokyo */
+@import 'default';
+@import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap');
+
+:root {
+  --u-blue:      #0072BC;
+  --u-fg:        #222222;
+  --u-fg-mute:   #666666;
+  --u-header-fg: #36393F;   /* dark sumi-ink gray for header text */
+  --u-bg:        #FFFFFF;
+  --u-dark:      #0F1A2C;
+  --u-line:      #D8DCE2;   /* separator gray */
+  --u-line-soft: #ECEEF2;
+  --u-accent-bg: #F4F8FC;
+}
+
+/* ============ base (regular slides) ============ */
+section {
+  font-family: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+  color: var(--u-fg);
+  background: var(--u-bg);
+  font-size: 25px;
+  line-height: 1.55;
+  /* top padding leaves room for the fixed header (h1, 80px) */
+  padding: 108px 64px 60px 64px;
+  /* force flex column with body anchored to the top — overrides marp-core's
+     place-content:center which was vertically centering body content */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  place-content: initial !important;
+}
+
+/* fixed top header — h1 of every regular slide */
+section h1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  margin: 0;
+  padding: 26px 64px 0 64px;
+  background: var(--u-bg);
+  color: var(--u-header-fg);
+  border: none;
+  border-bottom: 1px solid var(--u-line);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+section h2 {
+  color: var(--u-blue);
+  font-weight: 700;
+  font-size: 24px;
+  margin-top: 18px;
+}
+section h3 {
+  color: var(--u-fg);
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 14px;
+}
+
+section ul, section ol {
+  margin: 0;
+  padding-left: 1.4em;
+}
+section li + li { margin-top: 6px; }
+
+section strong { color: var(--u-blue); }
+
+section code {
+  background: var(--u-accent-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.92em;
+}
+
+section pre {
+  background: var(--u-accent-bg);
+  border-left: 4px solid var(--u-blue);
+  padding: 14px 18px;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+section blockquote {
+  border-left: 4px solid var(--u-blue);
+  background: #DCE7F2;
+  padding: 12px 20px;
+  margin: 14px 0;
+  color: #2C3E5C;
+}
+
+section table {
+  border-collapse: collapse;
+  font-size: 21px;
+}
+section table th {
+  background: var(--u-blue);
+  color: #fff;
+  padding: 8px 14px;
+  text-align: left;
+}
+section table td {
+  border-bottom: 1px solid var(--u-line-soft);
+  padding: 8px 14px;
+}
+
+/* suppress marp-core's auto-injected pagination ::after.
+   Marpit's CSS post-processor strips `content` declarations from custom
+   ::after rules, so we hide it via opacity instead (reliable). */
+section::after { opacity: 0 !important; }
+
+/* page number — bottom-right, n / total format */
+section[data-marpit-pagination]::before {
+  content: attr(data-marpit-pagination) " / " attr(data-marpit-pagination-total);
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  color: var(--u-fg-mute);
+  font-size: 14px;
+}
+
+/* ============ title slide ============ */
+section.title {
+  background: var(--u-bg);   /* pure white to match logo background */
+  /* left padding 68px aligns h1/h2 with the trimmed logo's visible left edge
+     (logo PNG now has only ~4px residual whitespace at left) */
+  padding: 80px 96px 80px 68px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+/* override fixed-header behavior on title slide */
+section.title h1 {
+  position: static;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--u-fg);
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 64px 0 12px 0;
+  z-index: auto;
+}
+section.title h2 {
+  color: var(--u-fg-mute);
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0;
+}
+
+section.title .meta {
+  position: absolute;
+  left: 68px;
+  /* align meta's bottom with the logo's bottom (both at 55px from slide bottom) */
+  bottom: 55px;
+}
+section.title .meta p { margin: 2px 0; }
+section.title .meta .affil {
+  font-size: 20px;
+  color: var(--u-fg-mute);
+}
+section.title .meta .name {
+  font-size: 30px;
+  color: var(--u-fg);
+  font-weight: 700;
+}
+section.title .meta .date {
+  font-size: 18px;
+  color: var(--u-fg-mute);
+  margin-top: 6px;
+}
+
+/* title-slide logo — placed via an actual <img class="title-logo"> in the
+   markdown. Using <img> instead of ::after avoids the Marpit content-stripping
+   issue that prevented background-image based logos from rendering reliably. */
+section.title .title-logo {
+  position: absolute;
+  right: 64px;
+  bottom: 65px;
+  height: 70px;
+  width: auto;
+  z-index: 1;
+}
+/* opt-out: add `class: nologo` to the deck frontmatter (or
+   `_class: title nologo` on just the title slide) to hide the logo. */
+section.nologo .title-logo { display: none !important; }
+/* fully suppress the page-number pseudo on the title slide */
+section.title::before { content: none; }
+
+/* ============ chapter divider ============ */
+section.chapter {
+  background: var(--u-accent-bg);   /* light blue, same as quote slide */
+  color: var(--u-fg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  padding: 80px 96px;
+}
+/* override fixed-header on chapter slide */
+section.chapter h1 {
+  position: static;
+  height: auto;
+  padding: 0 0 12px 0;
+  background: transparent;
+  color: var(--u-header-fg);
+  border: none;
+  border-bottom: 1px solid var(--u-line);
+  font-size: 42px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  z-index: auto;
+}
+section.chapter h2 {
+  color: var(--u-fg-mute);
+  font-size: 22px;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+}
+section.chapter::before { color: var(--u-fg-mute); }
+
+/* ============ two-column ============ */
+/* requires <div class="col">…</div> wrappers in markdown */
+section.two-col {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+section.two-col .col h3:first-child { margin-top: 0; }
+
+/* ============ quote / impact ============ */
+section.quote {
+  background: var(--u-accent-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  text-align: center;
+}
+/* override fixed-header on quote slide */
+section.quote h1 {
+  position: static;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--u-fg);
+  border: none;
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 20px 0;
+  z-index: auto;
+}
+section.quote p {
+  font-size: 20px;
+  color: var(--u-fg-mute);
+}

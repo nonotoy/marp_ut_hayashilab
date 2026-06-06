@@ -1,0 +1,16 @@
+{
+  "name": "marp-slides",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Marp-based slide automation for U-Tokyo academic presentations",
+  "scripts": {
+    "build:pdf": "marp --theme-set themes --allow-local-files --pdf",
+    "build:pptx": "marp --theme-set themes --allow-local-files --pptx",
+    "build:html": "marp --theme-set themes --allow-local-files --html",
+    "watch": "marp --theme-set themes --allow-local-files -w -s decks/",
+    "build:sample": "marp --theme-set themes --allow-local-files --pdf decks/sample/slides.md -o build/sample.pdf"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.1.2"
+  }
+}
