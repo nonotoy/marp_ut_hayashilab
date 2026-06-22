@@ -3,6 +3,7 @@ marp: true
 theme: utokyo
 paginate: true
 size: 16:9
+logo: true   # false にすると表紙のロゴを非表示
 ---
 
 <!-- _class: title -->
@@ -12,8 +13,8 @@ size: 16:9
 ## サブタイトル / 副題
 
 <div class="meta">
-<p class="affil">総合文化研究科 言語情報科学専攻 D1</p>
-<p class="name">東大太郎</p>
+<p class="affil">{{affil}}</p>
+<p class="name">{{name}}</p>
 <p class="date">YYYY-MM-DD</p>
 </div>
 
@@ -73,4 +74,4 @@ size: 16:9
 
 ご清聴ありがとうございました。
 
-連絡先: todai-taro@example.com
+連絡先: {{email}}

@@ -1,6 +1,7 @@
 /* @theme utokyo */
 @import 'default';
 @import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
   --u-blue:      #0072BC;
@@ -45,7 +46,7 @@ section h1 {
   color: var(--u-header-fg);
   border: none;
   border-bottom: 1px solid var(--u-line);
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
   letter-spacing: 0.02em;
   box-sizing: border-box;
@@ -196,6 +197,13 @@ section.title .title-logo {
 section.nologo .title-logo { display: none !important; }
 /* fully suppress the page-number pseudo on the title slide */
 section.title::before { content: none; }
+
+/* ============ English decks ============ */
+/* opt-in: add `class: lang-en` to the deck frontmatter to switch the body
+   font to Inter (Latin-only presentations). Code stays monospace. */
+section.lang-en {
+  font-family: "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
+}
 
 /* ============ chapter divider ============ */
 section.chapter {

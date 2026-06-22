@@ -1,5 +1,9 @@
 # Marp Slides
 
+> この marp-deck は東京大学 大学院総合文化研究科 林研究室の学生による非公式のリポジトリです。研究室外の方の利用により生じた一切のトラブル・損害について、作成者および研究室は責任を負いません。各自の責任でご利用ください。
+>
+> This marp-deck is an unofficial repository maintained by students of the Hayashi Lab, Graduate School of Arts and Sciences, University of Tokyo. The authors and the laboratory assume no responsibility or liability for any trouble or damage arising from use by anyone outside the laboratory. Use it at your own risk.
+
 Marp ベースのスライド自動化プロジェクト。設計判断・配色・ロゴ運用ルールの詳細は [`design.md`](./design.md) を参照。
 
 ## セットアップ
@@ -12,67 +16,67 @@ npm install
 
 ## ビルド
 
+ビルドは marp を直接叩かず、`scripts/build.mjs` を経由する。これが `profile.yaml` を読み込んでプレースホルダを置換し、front-matter の `logo` を解釈してから marp を実行する。
+
 ```bash
-# 同梱サンプルを PDF に
+# 同梱サンプルを PDF に → build/sample.pdf
 npm run build:sample
 
-# 任意のデッキを PDF に
-npm run build:pdf -- decks/<deck>/slides.md -o build/<name>.pdf
+# .md ファイルを直接指定（ファイル名は自由）→ build/<ファイル名>.pdf
+npm run build -- decks/<deck>/<name>.md
+npm run build -- decks/<deck>/<name>.md pptx
+npm run build -- decks/<deck>/<name>.md html
 
-# PPTX 出力
-npm run build:pptx -- decks/<deck>/slides.md -o build/<name>.pptx
+# ディレクトリ指定でもよい（既定は pdf）
+npm run build -- decks/<deck>          # build/<deck>.pdf
 
-# HTML 出力
-npm run build:html -- decks/<deck>/slides.md -o build/<name>.html
-
-# ライブプレビュー（http://localhost:8080 を自動オープン）
+# ライブプレビュー（http://localhost:8080）
 npm run watch
 ```
 
-## 新しい発表を作る
+第1引数は .md ファイルでもディレクトリでもよい。
 
-1. テンプレを複製:
-   ```bash
-   cp -r decks/_template decks/2026-05_topic
-   ```
-2. `decks/2026-05_topic/slides.md` を編集
-3. ビルド:
-   ```bash
-   npm run build:pdf -- decks/2026-05_topic/slides.md -o build/2026-05_topic.pdf
-   ```
+- ファイル指定（`decks/<deck>/<name>.md`）: 出力は `build/<name>.<ext>`。ファイル名は自由に付けられる。
+- ディレクトリ指定（`decks/<deck>`）: 中の `slides.md` を使う。無ければ単一の `.md` を自動採用（複数あればどれをビルドするか指定を求められる）。出力は `build/<deck>.<ext>`。
+- 例外: ファイル名が `slides.md` のときだけ出力名にディレクトリ名を使う（`decks/sample/slides.md` → `build/sample.pdf`）。
 
-`decks/<日付>_<トピック>/` で 1 発表 = 1 ディレクトリ運用。デッキ固有の図表は `decks/<deck>/assets/` に置く。
+配置の制約: 表紙ロゴの相対パス（`../../assets/`）の都合で、デッキは `decks/` の直下にもう1段（`decks/<deck>/<name>.md`）に置く。`decks/` に直接 `.md` を置くとロゴパスが壊れる。
+
+注意: `npm run watch` は marp を直接叩くため、プレースホルダ（`{{name}}` 等）とロゴ切替は処理されない。プレビューでは `{{...}}` が生のまま表示される。最終確認は `npm run build` で行う。
+
+## プロフィール（氏名・所属など）の管理
+
+毎回は変わらない属人情報（氏名・所属・連絡先）は `slides.md` に直書きせず、[`profile.yaml`](./profile.yaml) に集約する。`slides.md` 側には `{{key}}` のプレースホルダを書き、ビルド時に置換される。日付は発表ごとに変わるので profile では持たず、各 `slides.md` に直書きする。
+
+ルートの `profile.yaml`（全デッキ共通のデフォルト）:
+
+```yaml
+name: 東大太郎
+affil: 総合文化研究科 言語情報科学専攻 D1
+email: todai-taro@example.com
+
+# 英語発表用（{{name_en}} / {{affil_en}} で参照）
+name_en: Taro Todai
+affil_en: Graduate School of Arts and Sciences, D1
+```
+
+`slides.md` 内での参照（日付は直書き）:
+
+```markdown
+<div class="meta">
+<p class="affil">{{affil}}</p>
+<p class="name">{{name}}</p>
+<p class="date">2026-05-02</p>
+</div>
+```
+
+- デッキ個別に上書きしたいときは `decks/<deck>/profile.yaml` を置く。ルート → デッキの順でマージされ、デッキ側が優先される。
+- `profile.yaml` に無いキーを `{{...}}` で参照すると、警告を出して元の文字列のまま残す。
+- タイトル・サブタイトル・本文など、その発表固有で毎回変わるものは `slides.md` に直書きでよい（プレースホルダ不要）。日付も発表専用なら直書きで構わない。
 
 ## 表紙のロゴを出す/出さない
 
-東京大学コミュニケーションマークは、デッキごとに切り替え可能。**`<img class="title-logo">`** を表紙に置くと右下に出る、置かないと出ない、というのが基本。短期/長期で切り替えたい場合は以下の3パターンから選ぶ。
-
-### 方法 A: Markdown から `<img>` を消す（一番シンプル）
-
-`decks/<deck>/slides.md` の表紙にある画像タグを削除（またはコメントアウト）するだけ:
-
-```markdown
-<!-- _class: title -->
-
-# タイトル
-
-## サブタイトル
-
-<div class="meta">
-<p class="affil">…</p>
-<p class="name">…</p>
-<p class="date">YYYY-MM-DD</p>
-</div>
-
-<!-- ロゴを出すなら↓を残す。出さないなら削除 or コメントアウト -->
-<img src="../../assets/utokyo_logotype.png" class="title-logo" alt="" />
-```
-
-ロゴを使う予定がそもそも無いデッキ向け。
-
-### 方法 B: フロントマターでデッキ全体オフ
-
-`decks/<deck>/slides.md` の冒頭に `class: nologo` を追加するとロゴが消える（CSS の `section.nologo .title-logo { display: none }` で抑止）。`<img>` タグはそのまま残してOK。
+東京大学コミュニケーションマークは表紙にだけ載るので、`slides.md` 冒頭の front-matter で ON/OFF する。
 
 ```yaml
 ---
@@ -80,38 +84,48 @@ marp: true
 theme: utokyo
 paginate: true
 size: 16:9
-class: nologo      # ← これを足すとロゴ非表示
+logo: true     # false にすると表紙のロゴを非表示
 ---
 ```
 
-学会用に「ロゴ無し」、内部発表用に「ロゴ有り」など、**1 行コメントアウトで切り替えたい**ケースに最適。
+`logo: false` のとき、ビルドスクリプトが表紙の `<img class="title-logo">` 行を出力から取り除く。`logo` キー自体は marp に渡す前に除去されるため、marp 側には影響しない。未指定（キーが無い）の場合はロゴ表示（既定 true）。
+
+学会提出はロゴ無し・学内発表はロゴ有り、のような切替は 1 行（`true`/`false`）で済む。
+
+## 英語発表（フォントを Inter に切替）
+
+英語デッキは本文フォントを Inter に切り替える。front-matter に `class: lang-en` を 1 行足すだけ:
 
 ```yaml
-# class: nologo    # 内部発表時はコメントアウト → ロゴ有り
-class: nologo      # 学会提出時はこの行を有効化 → ロゴ無し
+---
+marp: true
+theme: utokyo
+paginate: true
+size: 16:9
+logo: true
+class: lang-en     # 本文を Inter に（日本語デッキは無指定で BIZ UDPゴシック）
+---
 ```
 
-### 方法 C: 表紙だけ個別オフ
+- 切替は `themes/utokyo.css` の `section.lang-en` で実装（Inter を `@import`、コードは monospace のまま）。
+- 氏名・所属の英語表記は `profile.yaml` の `name_en` / `affil_en` を `{{name_en}}` / `{{affil_en}}` で参照する。
+- 動くサンプルは [`decks/sample_en/slides.md`](./decks/sample_en/slides.md)（`npm run build -- decks/sample_en`）。
 
-特定の表紙スライドだけロゴを消すなら `_class:` に `nologo` を追加:
+## 新しい発表を作る
 
-```markdown
-<!-- _class: title nologo -->
+1. テンプレを複製（ファイル名は自由。`slides.md` でなくてよい）:
+   ```bash
+   cp -r decks/_template decks/2026-05_topic
+   mv decks/2026-05_topic/template.md decks/2026-05_topic/talk.md
+   ```
+2. `decks/2026-05_topic/talk.md` を編集（タイトル・本文・`logo` の true/false）
+3. 必要なら `decks/2026-05_topic/profile.yaml` で属人情報を上書き
+4. ビルド:
+   ```bash
+   npm run build -- decks/2026-05_topic/talk.md
+   ```
 
-# タイトル
-...
-```
-
-複数の表紙スライドを使い分けたいケース（プロローグ・章扉的な扱い）向け。実用上は A か B でほぼ事足りる。
-
-### 推奨
-
-| シーン | 方法 |
-|---|---|
-| 学会・査読・対外発表（ロゴ規程の関係でロゴを出さない） | **B**（フロントマター切替） |
-| 学内ゼミ・授業・進捗報告（ロゴ常時表示） | デフォルト（何もしない） |
-| ロゴを完全に使わないデッキ | **A**（`<img>` タグごと削除） |
-| 表紙が複数あって個別制御 | **C**（`_class:` で個別） |
+`decks/<日付>_<トピック>/` で 1 発表 = 1 ディレクトリ運用。デッキ固有の図表は `decks/<deck>/assets/` に置く。ディレクトリ内の .md が1つだけなら `npm run build -- decks/2026-05_topic`（ディレクトリ指定）でもビルドできる。
 
 ## カスタムクラス一覧
 
@@ -124,7 +138,6 @@ class: nologo      # 学会提出時はこの行を有効化 → ロゴ無し
 | `two-col` | 2 カラム本文。各カラムを `<div class="col">…</div>` で囲む。 |
 | `quote` | 引用・キャッチコピー。中央寄せ大文字。 |
 | (指定なし) | 通常スライド。固定ヘッダー (h1) + 本文は上から順。 |
-| `nologo` | （表紙と組み合わせて）表紙のロゴだけ非表示にする。 |
 
 ## ディレクトリ構成
 
@@ -132,8 +145,11 @@ class: nologo      # 学会提出時はこの行を有効化 → ロゴ無し
 marp/
 ├── README.md              # このファイル
 ├── design.md              # 設計・配色・ロゴ運用ルール
-├── package.json           # marp-cli 固定
+├── profile.yaml           # 氏名・所属など共通プロフィール
+├── package.json           # marp-cli 固定 / npm scripts
 ├── package-lock.json
+├── scripts/
+│   └── build.mjs          # profile 置換 + logo 切替 + marp 実行
 ├── assets/
 │   └── utokyo_logotype.png
 ├── themes/
@@ -141,13 +157,15 @@ marp/
 ├── decks/
 │   ├── _template/
 │   │   └── template.md    # 新規デッキの雛形
-│   └── sample/
-│       └── slides.md      # テンプレ検証用サンプル
+│   ├── sample/
+│   │   └── slides.md      # テンプレ検証用サンプル（日本語）
+│   └── sample_en/
+│       └── slides.md      # 英語サンプル（class: lang-en / Inter）
 └── build/                 # 生成物（git 管理外）
 ```
 
 ## ノート
 
-- iCloud Drive 配下に置いている関係で **git 管理は現状していない**。バージョン管理を入れたい場合は別の場所（`~/Code/` など）にコピーしてから `git init` する想定。
 - フォントは BIZ UDPゴシック を Google Fonts から `@import` で取得し、PDF にフォント埋め込み。学外PCでも見た目が崩れない。
 - ロゴは `<img>` 要素として配置（`::after` 経由ではないので Marpit の content 後処理に巻き込まれない）。サイズ・位置の微調整は `themes/utokyo.css` の `section.title .title-logo {…}` で行う。
+- ビルド時に `decks/<deck>/.generated.slides.md` を一時生成して marp に渡し、ビルド後に削除する（git 管理外）。

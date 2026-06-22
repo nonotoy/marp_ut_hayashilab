@@ -3,6 +3,7 @@ marp: true
 theme: utokyo
 paginate: true
 size: 16:9
+logo: true   # false にすると表紙のロゴを非表示
 ---
 
 <!-- _class: title -->
@@ -12,8 +13,8 @@ size: 16:9
 ## BIZ UDPゴシック × 東京大学コミュニケーションマーク
 
 <div class="meta">
-<p class="affil">総合文化研究科 言語情報科学専攻 D1</p>
-<p class="name">東大太郎</p>
+<p class="affil">{{affil}}</p>
+<p class="name">{{name}}</p>
 <p class="date">2026-05-02</p>
 </div>
 

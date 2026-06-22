@@ -3,6 +3,10 @@ node_modules/
 
 # build artifacts
 build/
+decks/**/.generated.*.md
 
 # macOS
 .DS_Store
+
+history.md
+status.md
