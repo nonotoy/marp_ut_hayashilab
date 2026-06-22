@@ -51,7 +51,7 @@ npm run watch
 ルートの `profile.yaml`（全デッキ共通のデフォルト）:
 
 ```yaml
-name: 東大太郎
+name: 東大 太郎
 affil: 総合文化研究科 言語情報科学専攻 D1
 email: todai-taro@example.com
 
