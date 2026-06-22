@@ -2,8 +2,8 @@
 # 各 deck フォルダに profile.yaml を置くと、その deck だけ上書きできる。
 # slides.md / template.md 内の {{key}} がここの値に置換される。
 
-name: 東大太郎
-affil: 東京大学 大学院総合文化研究科 言語情報科学専攻 D1
+name: 東大 太郎
+affil: 東京大学 大学院総合文化研究科 言語情報科学専攻
 email: todai-taro@example.com
 
 # 英語発表用（{{name_en}} / {{affil_en}} で参照）。
